@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alec & Kersti's Wedding</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --sage: #A8B5A0;
+    --sage-light: #C5D1BE;
+    --sage-dark: #7A8C70;
+    --dusty-rose: #D4A9A9;
+    --dusty-rose-light: #E8CECE;
+    --charcoal: #3A3A3A;
+    --warm-gray: #6B6560;
+    --light-gray: #B5AFA8;
+    --gold: #C9A96E;
+    --gold-light: #E0D0A8;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+  }
+
+  /* ===== LOGIN SCREEN ===== */
+  #login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream);
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+
+  #login-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .login-container {
+    text-align: center;
+    padding: 2.5rem;
+    max-width: 480px;
+    width: 90%;
+  }
+
+  .login-ornament {
+    font-size: 1.5rem;
+    color: var(--sage);
+    letter-spacing: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .login-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 300;
+    color: var(--charcoal);
+    line-height: 1.3;
+    margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+  }
+
+  .login-subtitle {
+    font-size: 0.85rem;
+    color: var(--warm-gray);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .login-input-group {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  .login-input {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 1px solid var(--sage-light);
+    border-radius: 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    background: var(--warm-white);
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    letter-spacing: 0.08em;
+  }
+
+  .login-input::placeholder {
+    color: var(--light-gray);
+    font-weight: 300;
+  }
+
+  .login-input:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(168, 181, 160, 0.15);
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--sage);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.15s ease;
+  }
+
+  .login-btn:hover { background: var(--sage-dark); }
+  .login-btn:active { transform: scale(0.98); }
+
+  .login-error {
+    color: var(--dusty-rose);
+    font-size: 0.8rem;
+    margin-top: 0.8rem;
+    min-height: 1.2rem;
+    font-weight: 400;
+    transition: opacity 0.3s ease;
+  }
+
+  .login-footer-ornament {
+    margin-top: 2.5rem;
+    color: var(--sage-light);
+    font-size: 0.8rem;
+    letter-spacing: 0.3rem;
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  #main-content {
+    display: none;
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #main-content.active { display: block; }
+
+  .section {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+  }
+
+  /* ===== SECTION: LANDING ===== */
+  .landing-section {
+    background: var(--cream);
+    flex-direction: column;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .landing-photo-frame {
+    width: min(400px, 80vw);
+    height: min(400px, 80vw);
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--sage-light);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    margin-bottom: 2.5rem;
+    flex-shrink: 0;
+  }
+
+  .landing-photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .landing-welcome {
+    max-width: 600px;
+  }
+
+  .landing-welcome h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: var(--charcoal);
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .landing-welcome p {
+    font-size: 0.88rem;
+    line-height: 1.9;
+    color: var(--warm-gray);
+    font-weight: 300;
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--light-gray);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: bobble 2s ease-in-out infinite;
+  }
+
+  .scroll-indicator svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--light-gray);
+  }
+
+  @keyframes bobble {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ===== SECTION: ABOUT US ===== */
+  .about-section {
+    background: var(--warm-white);
+    flex-direction: column;
+    padding: 4rem 2rem;
+  }
+
+  .about-inner {
+    max-width: 750px;
+    text-align: center;
+  }
+
+  .section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .about-inner h2 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom: 2rem;
+    color: var(--charcoal);
+  }
+
+  .about-photo {
+    width: min(320px, 70vw);
+    height: min(320px, 70vw);
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 2rem;
+    border: 3px solid var(--sage-light);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+  }
+
+  .about-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .about-text {
+    font-size: 0.85rem;
+    line-height: 2;
+    color: var(--warm-gray);
+    font-weight: 300;
+    text-align: left;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+
+  .about-text::-webkit-scrollbar { width: 4px; }
+  .about-text::-webkit-scrollbar-track { background: transparent; }
+  .about-text::-webkit-scrollbar-thumb { background: var(--sage-light); border-radius: 2px; }
+
+  /* ===== SECTION: ADVENTURES ===== */
+  .adventures-section {
+    background: var(--cream);
+    flex-direction: column;
+    padding: 4rem 1.5rem;
+    align-items: center;
+  }
+
+  .adventures-inner {
+    max-width: 1100px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .adventures-inner h2 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom: 2rem;
+    color: var(--charcoal);
+  }
+
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    max-height: 75vh;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+
+  .tile-grid::-webkit-scrollbar { width: 4px; }
+  .tile-grid::-webkit-scrollbar-track { background: transparent; }
+  .tile-grid::-webkit-scrollbar-thumb { background: var(--sage-light); border-radius: 2px; }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .tile:hover {
+    transform: translateY(-4px);
+  }
+
+  .tile-img-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .tile:hover .tile-img-wrapper {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.14);
+  }
+
+  .tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .tile:hover img { transform: scale(1.05); }
+
+  .tile-label {
+    padding: 0.6rem 0.2rem 0;
+    color: var(--charcoal);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-align: center;
+  }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .modal-content {
+    background: var(--warm-white);
+    border-radius: 12px;
+    max-width: 650px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .modal-content::-webkit-scrollbar { width: 4px; }
+  .modal-content::-webkit-scrollbar-track { background: transparent; }
+  .modal-content::-webkit-scrollbar-thumb { background: var(--sage-light); border-radius: 2px; }
+
+  .modal-close {
+    position: sticky;
+    top: 0.8rem;
+    float: right;
+    margin-right: 0.8rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.9);
+    color: var(--charcoal);
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: background 0.2s;
+  }
+
+  .modal-close:hover { background: white; }
+
+  .modal-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .modal-body {
+    padding: 1.8rem;
+  }
+
+  .modal-body h3 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: var(--charcoal);
+  }
+
+  .modal-body p {
+    font-size: 0.85rem;
+    line-height: 1.9;
+    color: var(--warm-gray);
+    font-weight: 300;
+  }
+
+  /* ===== SECTION: BUCKET LIST ===== */
+  .bucket-section {
+    background: var(--warm-white);
+    flex-direction: column;
+    padding: 4rem 2rem;
+  }
+
+  .bucket-inner {
+    max-width: 700px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .bucket-inner h2 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom: 2.5rem;
+    color: var(--charcoal);
+  }
+
+  .bucket-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    text-align: left;
+  }
+
+  .bucket-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    background: var(--cream);
+    border-radius: 8px;
+    border-left: 3px solid var(--sage);
+    transition: transform 0.2s ease;
+  }
+
+  .bucket-item:hover { transform: translateX(4px); }
+
+  .bucket-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    width: 2rem;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .bucket-item-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--charcoal);
+    font-weight: 300;
+  }
+
+  /* ===== SECTION: REGISTRY ===== */
+  .registry-section {
+    background: var(--cream);
+    flex-direction: column;
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .registry-inner {
+    max-width: 500px;
+  }
+
+  .registry-inner h2 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom: 1rem;
+    color: var(--charcoal);
+  }
+
+  .registry-inner p {
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: var(--warm-gray);
+    font-weight: 300;
+    margin-bottom: 2rem;
+  }
+
+  .qr-placeholder {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid var(--sage-light);
+  }
+
+  .qr-placeholder img {
+    width: 180px;
+    height: 180px;
+  }
+
+  .qr-placeholder span {
+    color: var(--light-gray);
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .registry-note {
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: var(--light-gray);
+    font-style: italic;
+  }
+
+  /* ===== NAV DOTS ===== */
+  .nav-dots {
+    position: fixed;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sage);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    padding: 0;
+  }
+
+  .nav-dot.active {
+    background: var(--sage);
+    transform: scale(1.2);
+  }
+
+  .nav-dot:hover { background: var(--sage-light); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .section { padding: 1.5rem; }
+
+    .landing-photo-frame {
+      width: min(260px, 65vw);
+      height: min(260px, 65vw);
+      margin-bottom: 1.5rem;
+    }
+
+    .about-photo {
+      width: min(200px, 55vw);
+      height: min(200px, 55vw);
+    }
+
+    .tile-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .nav-dots { right: 0.6rem; }
+
+    .nav-dot { width: 8px; height: 8px; }
+
+    .bucket-item { padding: 1rem; }
+
+    .modal-body { padding: 1.2rem; }
+  }
+
+  /* ===== FADE-IN ANIMATIONS ===== */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div id="login-screen">
+  <div class="login-container">
+    <div class="login-ornament">&mdash; &hearts; &mdash;</div>
+    <h1 class="login-title">You Are Invited to<br>Alec &amp; Kersti's Wedding</h1>
+    <p class="login-subtitle">Please enter the password to learn more about the couple<br>and explore some of their favorite adventures</p>
+    <div class="login-input-group">
+      <input type="text" id="password-input" class="login-input" placeholder="Enter password" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" style="-webkit-text-security: disc;">
+    </div>
+    <button id="login-btn" class="login-btn" onclick="attemptLogin()">Enter</button>
+    <div id="login-error" class="login-error"></div>
+    <div class="login-footer-ornament">&bull; &bull; &bull;</div>
+  </div>
+</div>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<div id="main-content">
+
+  <!-- NAV DOTS -->
+  <nav class="nav-dots" id="nav-dots">
+    <button class="nav-dot active" data-section="0" title="Welcome"></button>
+    <button class="nav-dot" data-section="1" title="About Us"></button>
+    <button class="nav-dot" data-section="2" title="Adventures"></button>
+    <button class="nav-dot" data-section="3" title="Bucket List"></button>
+    <button class="nav-dot" data-section="4" title="Registry"></button>
+  </nav>
+
+  <!-- SECTION 1: LANDING -->
+  <section class="section landing-section" id="section-0">
+    <div class="landing-photo-frame fade-in">
+      <img src="Landing Page.jpg" alt="Alec and Kersti" onerror="this.parentElement.style.background='var(--sage-light)'; this.style.display='none';">
+    </div>
+    <div class="landing-welcome fade-in">
+      <h1>Welcome to Alec &amp; Kersti's Wedding Website</h1>
+      <p>They have thoughtfully curated this website to provide you with an intimate experience as you learn about them, explore their favorite adventures, and follow them along on their journey. They are incredibly grateful to have you as part of their lives and look forward to a million more memories with you. Hope you enjoy memory road as much as we did!</p>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SECTION 2: ABOUT US -->
+  <section class="section about-section" id="section-1">
+    <div class="about-inner">
+      <div class="section-label fade-in">Our Story</div>
+      <h2 class="fade-in">About Us</h2>
+      <div class="about-photo fade-in">
+        <img src="About Us.jpeg" alt="About Alec and Kersti" onerror="this.parentElement.style.background='var(--sage-light)'; this.style.display='none';">
+      </div>
+      <div class="about-text fade-in">
+        <p>We've been together for over ten years! &hellip;I know, can you believe it?</p>
+        <br>
+        <p>Our journey starts all the way back in "Toon-town," where Kersti somehow fell for Alec during his bachelor-pad days &mdash; he was living his best life, though his sister Jenna had to endure it all and was decidedly <em>not</em> living hers. After an incredible seven months together, Kersti took a leap of faith and transferred to West Virginia University so they could close the distance. One of their very first pictures together? Yes &mdash; on a burning couch. Go Eers!</p>
+        <br>
+        <p>They tried to live as gloriously as possible on a college budget, interning in different cities as they figured out where to start their post-college life &mdash; all while saving every penny for travel. Fast forward to graduation, which wasn't exactly what you'd expect. Neither of them walked across a stage or shook a hand. Instead, they ate cake in Kersti's backyard and watched a half-hearted PowerPoint slide with their names on it. Thanks, COVID!</p>
+        <br>
+        <p>Graduation led them to engineering jobs in Philadelphia, PA, where they were truly on their own for the first time. No more meal swipes, weekly allowances, or PRT cars shuttling them around &mdash; they were real adults. Philly showed them how much they loved eating out and discovering new coffee shops. It was their first big-city experience, and to this day it holds some of their most cherished memories.</p>
+        <br>
+        <p>As life progressed, Kersti's job brought them down to Raleigh, NC, where they tried to find downtown and didn't realize they'd already driven through it. No more skyline filled with skyscrapers and bustling streets. But they met some of the most incredible people of their lives while figuring out their own path. As the friend group grew, so did the roots &mdash; and it became clear this was where Kersti and Alec would plant theirs.</p>
+        <br>
+        <p>In the spring of 2024, they got engaged in Sedona, AZ, followed by a house purchase that fall &mdash; an exciting year, to say the least. Since then, they've dove into home design and weekend projects while keeping their love for city dining and coffee shop explorations very much alive.</p>
+        <br>
+        <p>After a <em>lonnnnng</em> three-year engagement, they finally decided, "I guess it's time to plan our wedding" &mdash; which is exactly what brought you here today.</p>
+        <br>
+        <p>Thank you for being such an instrumental part of their lives. Without you, none of this would exist &mdash; and for that, they are endlessly grateful.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: ADVENTURE STORIES -->
+  <section class="section adventures-section" id="section-2">
+    <div class="adventures-inner">
+      <div class="section-label fade-in">Where We've Been</div>
+      <h2 class="fade-in">Adventure Stories</h2>
+      <div class="tile-grid fade-in" id="tile-grid"></div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: BUCKET LIST -->
+  <section class="section bucket-section" id="section-3">
+    <div class="bucket-inner">
+      <div class="section-label fade-in">What's Next</div>
+      <h2 class="fade-in">Our Bucket List</h2>
+      <ul class="bucket-list fade-in">
+        <li class="bucket-item">
+          <span class="bucket-icon">&#9992;</span>
+          <span class="bucket-item-text">Visit Seoul, Korea and find a relative of Alec's</span>
+        </li>
+        <li class="bucket-item">
+          <span class="bucket-icon">&#9749;</span>
+          <span class="bucket-item-text">Crop our own coffee beans from a region in Guatemala</span>
+        </li>
+        <li class="bucket-item">
+          <span class="bucket-icon">&#10052;</span>
+          <span class="bucket-item-text">Ice bath in Iceland</span>
+        </li>
+        <li class="bucket-item">
+          <span class="bucket-icon">&#10024;</span>
+          <span class="bucket-item-text">Camp under the northern lights</span>
+        </li>
+        <li class="bucket-item">
+          <span class="bucket-icon">&#9968;</span>
+          <span class="bucket-item-text">Hike the Dolomites</span>
+        </li>
+        <li class="bucket-item">
+          <span class="bucket-icon">&#127754;</span>
+          <span class="bucket-item-text">Jump off a waterfall in Hawaii</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SECTION 5: REGISTRY -->
+  <section class="section registry-section" id="section-4">
+    <div class="registry-inner">
+      <div class="section-label fade-in">Celebrate With Us</div>
+      <h2 class="fade-in">Wedding Registry</h2>
+      <p class="fade-in">Scan the QR code below to visit our wedding registry. Your presence on our special day is the greatest gift of all, but if you'd like to contribute, we truly appreciate your generosity.</p>
+      <div class="qr-placeholder fade-in">
+        <span>QR code coming soon &mdash; drop a QR image named "registry-qr.png" in this folder</span>
+      </div>
+      <p class="registry-note fade-in">Replace the placeholder above with your registry QR code image</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ==================== ADVENTURE MODAL ==================== -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <img class="modal-image" id="modal-image" src="" alt="">
+    <div class="modal-body">
+      <h3 id="modal-title"></h3>
+      <p id="modal-text"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== ADVENTURE DATA =====
+const adventures = [
+  { city: "Asheville", file: "Asheville.jpeg", text: "Asheville, NC was our first North Carolina adventure after moving down here. You'll commonly hear \"Raleigh is great because you're two hours from the mountains and two hours from the beach\" \u2014 try four hours from the good mountains and two and a half from the good beaches. But after our 4+ hour car ride out to Asheville, we started by exploring the Blue Ridge Mountains, specifically driving up the Blue Ridge Parkway. This picture is us taking a pit stop on the side of the road as we drove up the mountain. This drive was one of the most incredible experiences because we got to see all seasons as we ventured up. At the bottom: sunny and blue skies. As we climbed higher, fall kicked into action with a sky-level view of the town below and foliage covering the trees. When we made it to the very top? Snow and ice. An awesome first experience in this wonderful little town, followed by brewery hopping!" },
+  { city: "Atlanta", file: "Atlanta.jpeg", text: "A work trip gone sideways \u2014 booked an extended weekend around a trip Alec had planned, only to find out it was cancelled. Luckily the hotel and flight were non-refundable, so we decided to take on Atlanta. Having never been there before, we did what all adventure pros do: search Facebook Events. We stumbled upon the \"Atlanta Food and Wine Festival\" and boy, were we lucky. An all-you-can-eat and all-you-can-drink event centered around wine. Although the humidity had Alec sweating through his shirt, the scallop risotto and Pinot Noir helped him fight through. 'Til next time, Atlanta." },
+  { city: "Austin", file: "Austin.JPG", text: "Austin \u2014 have you heard of her? What blew up quickly as \"the best place to live\" naturally attracted us to plan a trip thinking we'd move to Texas. Out of the blue, we ventured down South to see what this place really had to offer, and it did not disappoint. A weekend full of food, beer, and coffee \u2014 what more could we ask for? Although this wasn't the city for us to plant our roots, we enjoyed every moment and may plan a trip back specifically for the slide built into the bar." },
+  { city: "Breckenridge", file: "Breckenridge.JPG", text: "What used to be casual weekend skiing turned into three years without strapping in. Shout out to Kersti's friend for moving to Denver and coordinating a ski trip to get us back in action. Powder was shredded, snow angels were made, and we all made it out alive. Cheers to that beautiful village \u2014 may our paths cross again!" },
+  { city: "Chicago", file: "Chicago.jpeg", text: "Windy City, she blowin' me kisses\u2026 A group of friends from Raleigh took on Chicago for St. Paddy's Day weekend. We saw the river dyed green, spent a fortune at McDonald's, felt our hands freeze over, but most importantly \u2014 flicked the bean. This was our first adventure up to Chicago and it did not disappoint. Great memories with great people." },
+  { city: "Cozumel", file: "Cozumel.jpg", text: "Fun fact about our time in Cozumel: we decided to rent a moped because why not? The first three hours were like living in a Lizzie McGuire movie \u2014 freeing. We took it to the other side of the island where we had it almost entirely to ourselves. Pit stops at white sand beaches, hole-in-the-wall bars, and crystal clear oases. All good and dandy until unexpectedly, a Mexican police officer on a dirt bike is in pursuit of our moped. Naturally, Kersti is holding on from the back saying \"do not pull over, keep going\" as I'm running through every terrible scenario in my head. After a few hundred yards I decide to pull over. The officer kindly asks me to take out my wallet and show him my cash \u2014 only to take all of it except the 100 pesos I begged him to let us keep so we could take the ferry back. What a day, what a life." },
+  { city: "Grand Canyon", file: "Grand Canyon.jpeg", text: "Biggest canyon we ever did see. We got ourselves into a bit of a pickle trying to take a picture fake-falling off the ledge when the park ranger came up and bluntly stated: \"I will not be the one shoveling your body out of the canyon when you fall.\" Thanks, bud. Noted. What was supposed to be a helicopter tour turned into a bus ride and walking on our own two legs due to wind. Still wouldn't trade this experience for the world!" },
+  { city: "Killington", file: "Killington.JPG", text: "New England \u2014 if you don't know, you should know by now: Alec likes an IPA. This was really the goal behind the trip, even if it was disguised as a ski trip. Black diamond? Don't worry, I'll be in the halfway house with my soup and beer." },
+  { city: "Las Vegas", file: "Las Vegas.jpeg", text: "Viva Las Vegas! We went here for Kersti's 21st birthday to celebrate how every broke college kid should \u2014 with $500 to our names. What could go wrong? We were winning money for the first time and booked dinner at the Stratosphere \u2014 the rotating restaurant at the top of the needle overlooking the city. Table right on the glass, eating for free from winnings, finally feeling like we'd made it. Well, all of it went south after Alec thought he could win even more before dinner. That blackjack dealer really was an evil person. Took all our money, and I had to do the walk of shame to the elevator with Kersti. In my silence on the ride up, she politely asked \"what's wrong?\" I told her I didn't feel well. We got to our window-front seat, and I had a better excuse: \"I'm motion sick.\" We ended up ordering soup and a glass of wine \u2014 that poor waiter. When we finally left, I told her what happened. By the grace of the gambling gods, we stopped into a Holiday Inn casino and Kersti hit the slot for $250. We were so BACK, baby!" },
+  { city: "Montana", file: "Montana.jpeg", text: "If we die\u2026 may we be reincarnated as a Dutton. A spur-of-the-moment trip that was supposed to be a relaxing weekend turned into an incredible adventure. In four short days we hit Bozeman, Big Sky, and Glacier National Park. One of our all-time favorite trips that will forever be hard to beat. If you haven't been to Montana, please book a flight after you RSVP to our wedding!" },
+  { city: "Nashville", file: "Nashville.JPG", text: "Oh boy, where do I start. If you're the one person reading this, I promise I will not expose what you did\u2026 except for the fact that you flooded our hotel room. What a time. Nashville, and more specifically Valentine's, you have our heart. May the mountains stay blue, the music be live, and the hot sauce stay burning." },
+  { city: "Philly", file: "Philly.jpeg", text: "This was the first city we lived in after college. It showed us what being an adult really was \u2014 how great of a life we could build if we stayed motivated and driven. But it also showed us what great food really is, what a sports town looks like, and what a homeless zombie apocalypse would be like. All jokes aside, this city stole our hearts immediately. Surrounded by great friends, great places, and great memories. Philly, you will be missed." },
+  { city: "Playa del Carmen", file: "Playa del Carmen.jpeg", text: "Tulum was our go-to spot, but we couldn't keep going back, so why not try the next-door neighbor? One of Alec's favorite memories is a beachside bar we stumbled upon on a random night walking through town. Hidden and tucked away, there was a tiki bar with surfboards as seats, low-top tables, a fire show, and live music. It was truly an escape from reality \u2014 a moment where we could finally be present and just\u2026 relax." },
+  { city: "San Juan", file: "San Juan.JPG", text: "Trip booked during COVID because flights were crazy cheap and hotels even cheaper, only to find out there was a curfew and if you were caught without a mask you'd be fined. We made the most of it and met awesome people to explore the city with. When our plane landed at 11 PM (because Frontier night flights are the broke-college-kid special), we lugged our massive checked bag through cobblestone streets trying to find our hotel. When we finally found it, the doors were locked. We pounded on the door with no one in sight. Finally someone let us in and told us about the curfew. By god, I don't know what would have happened if he hadn't answered that door \u2014 but hey, we made it!" },
+  { city: "Sedona", file: "Sedona.jpg", text: "This place is and forever will be special to us. The place where we had our first adventure back in fall of 2016 \u2014 and the place where we got engaged in 2024. Everything truly does come full circle. Sedona holds so many memories for us and is a place we'll continue to visit. Bell Rock, thank you." },
+  { city: "Tampa", file: "Tampa.JPG", text: "Internship number two! We took a leap of faith and explored a state far enough from home to see if we'd like it. We loved Tampa and the people we met, but Florida in the summer is a recipe for disaster. Besides the sweat, bugs, and more sweat, Tampa gave us a taste of the good life \u2014 beaches on the weekend, pools in every apartment, and our first experience in an up-and-coming city." },
+  { city: "Toronto", file: "Toronto.jpeg", text: "In college, we said screw it \u2014 let's take a trip up to Canada, eh. We had no idea what we were doing, and the Airbnb we booked was actually a shared space with a family who didn't speak English. Our \"cab\" took us to the wrong spot \u2014 already booked. So he drove us to the shared space, where Kersti and I thought we were going to get killed. Good news: we didn't. We spent maybe four hours there (just for sleep) and made it our mission to explore as much of Toronto as we could. Fun fact: they wouldn't accept my American dollars. What's up with that?" },
+  { city: "Tulum", file: "Tulum.JPG", text: "Our happy place. What started with Kersti asking for a trip that was \"south side, beachfront, in a bungalow\" turned into one of the most magical places we've ever been. We've returned five times \u2014 that's how much we adore it. Whether you're staying beachside or in town, there's something for everyone. Please, for the sake of the people, go visit!" },
+  { city: "Wintergreen", file: "Wintergreen.jpeg", text: "A Raleigh-friend trip planned in the mountains, surrounded by wine and beer. What a damn time. If you ever want to feel like Pablo Escobar, get yourself some Wintergreen, NC and explore what they have to offer. Sip your Chianti and eat your buttered bread \u2014 because this is the good life!" }
+];
+
+// ===== BUILD TILE GRID =====
+const tileGrid = document.getElementById('tile-grid');
+adventures.forEach((adv, i) => {
+  const tile = document.createElement('div');
+  tile.className = 'tile';
+  tile.onclick = () => openModal(i);
+  tile.innerHTML = `
+    <div class="tile-img-wrapper">
+      <img src="${adv.file}" alt="${adv.city}" loading="lazy">
+    </div>
+    <div class="tile-label">${adv.city}</div>
+  `;
+  tileGrid.appendChild(tile);
+});
+
+// ===== LOGIN =====
+const CORRECT_PASSWORD = 'aleckerstiluna';
+
+function attemptLogin() {
+  const input = document.getElementById('password-input');
+  const error = document.getElementById('login-error');
+  if (input.value === CORRECT_PASSWORD) {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('main-content').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    observeSections();
+  } else {
+    error.textContent = 'Password was entered incorrect. Please try again.';
+    input.value = '';
+    input.focus();
+  }
+}
+
+document.getElementById('password-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') attemptLogin();
+});
+
+// ===== MODAL =====
+function openModal(index) {
+  const adv = adventures[index];
+  document.getElementById('modal-image').src = adv.file;
+  document.getElementById('modal-image').alt = adv.city;
+  document.getElementById('modal-title').textContent = adv.city;
+  document.getElementById('modal-text').textContent = adv.text;
+  document.getElementById('modal-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('modal-overlay').classList.remove('active');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ===== SCROLL NAV DOTS =====
+const mainContent = document.getElementById('main-content');
+const dots = document.querySelectorAll('.nav-dot');
+const sections = document.querySelectorAll('.section');
+
+dots.forEach(dot => {
+  dot.addEventListener('click', () => {
+    const idx = parseInt(dot.dataset.section);
+    sections[idx].scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+mainContent.addEventListener('scroll', () => {
+  const scrollPos = mainContent.scrollTop;
+  const windowH = window.innerHeight;
+  let current = 0;
+  sections.forEach((sec, i) => {
+    if (scrollPos >= sec.offsetTop - windowH / 2) current = i;
+  });
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+});
+
+// ===== FADE-IN OBSERVER =====
+function observeSections() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, root: mainContent });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+</script>
+</body>
+</html>
